@@ -27,7 +27,6 @@ nearText = {
 generate_prompt = "Explain why this gift might be interesting to someone who likes {category}. The gift's name is {name}, with a description: {description}, and is priced at {price}."
 
 response = (client.query.get("Gift", [
-    "giftId",
     "name",
     "category",
     "image",
