@@ -12,7 +12,7 @@ export interface Gift {
 }
 
 export interface NearTextType {
-  concepts: [string] | [];
+  concepts: string[];
   certainty?: number;
   moveAwayFrom?: object;
 }

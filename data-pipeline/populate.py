@@ -16,6 +16,7 @@ client = weaviate.Client(
     auth_client_secret=weaviate.AuthApiKey(api_key=WEAVIATE_API_KEY), 
     additional_headers={"X-OpenAI-Api-Key": OPENAI_API_KEY, "X-Cohere-Api-Key": COHERE_API_KEY})
 
+# Only delete the class if you need to recreate it from scratch
 client.schema.delete_class("Gift")
 
 class_obj = {
@@ -30,7 +31,6 @@ class_obj = {
         "generative-cohere": {}
     }
 }
-
 
 client.schema.create_class(class_obj)
 
@@ -52,6 +52,7 @@ try:
             # 5 - price
             # 6 - average_rating
             # 7 - ratings_count
+            # 8 - link
 
             properties = {
                 "giftId": gift[0],
@@ -59,9 +60,10 @@ try:
                 "category": gift[2],
                 "image": gift[3],
                 "description": gift[4],
-                "price": gift[5],
-                "average_rating": gift[6],
-                "ratings_count": gift[7],
+                "price": float(gift[5]),
+                "average_rating": float(gift[6]),
+                "ratings_count": int(gift[7]),
+                "link": gift[8],
             }
 
             batch.add_data_object(data_object=properties, class_name="Gift")

@@ -48,18 +48,18 @@ export default function Home() {
     setSelectedGift(giftSelection[0]);
     setIsOpen(true);
   };
-
+  
   const closeModal = () => {
     setIsOpen(false);
   };
 
   const getRecommendations = async (e: SyntheticEvent) => {
     e.preventDefault();
-
+  
     setShowForm(false); // Hide form when getting recommendations
-
+  
     setIsLoading(true);
-
+  
     await fetch('/api/recommendations', {
       method: 'POST',
       headers: {
@@ -91,10 +91,10 @@ export default function Home() {
         alert('There was an error fetching the recommendations. Please try again.');
         setRecommendedGifts([]);
       });
-
+  
     setIsLoading(false);
     setLoadedOnce(true);
-  };
+  };  
 
   const nextStep = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -475,9 +475,8 @@ export default function Home() {
 
       <footer className="justify-center items-center bg-gray-600 text-white h-20 flex flex-col">
         <div>
-        Deploy it on &nbsp;<a href="https://vercel.com/templates/next.js/weaviate-bookrecs" className="underline text-blue-200">Vercel</a> and checkout the code on <a href="https://github.com/weaviate/BookRecs/" className="underline text-blue-200">Github</a>.</div>
-        <div>
-        Made with ❤️ by &nbsp;<a href="https://x.com/aj__chan/" target="_blank" className="underline text-blue-200">@aj__chan</a> &nbsp; and built with &nbsp;<a target="_blank" href="https://weaviate.io/" className="underline text-blue-200">Weaviate</a>.</div>
+          Made with ❤️ by Samek Rangarajan
+        </div>
       </footer>
     </div>
   );
