@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useState, useEffect } from 'react';
 import CircleLoader from 'react-spinners/CircleLoader';
 import Modal from 'react-modal';
 import Image from 'next/image';
@@ -39,6 +39,24 @@ export default function Home() {
   const [selectedGift, setSelectedGift] = useState<Gift | undefined>(undefined);
   const [currentStep, setCurrentStep] = useState(0); // Track the current step
   const [showForm, setShowForm] = useState(true); // Control form visibility
+
+  // Add this useEffect hook at the top level of your component
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        if (currentStep < 6) {
+          nextStep(e as unknown as SyntheticEvent);
+        } else if (currentStep === 6) {
+          getRecommendations(e as unknown as SyntheticEvent);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [currentStep]);
 
   const openModal = (gift_name: string) => {
     const giftSelection = recommendedGifts.filter((gift: Gift) => {
@@ -98,59 +116,14 @@ export default function Home() {
 
   const nextStep = (e: SyntheticEvent) => {
     e.preventDefault();
-    switch (currentStep) {
-      case 0:
-        setCurrentStep(1);
-        break;
-      case 1:
-        if (!relationship) {
-          alert("Please fill out this field!");
-          return;
-        }
-        setCurrentStep(2);
-        break;
-      case 2:
-        if (!occasion) {
-          alert("Please fill out this field!");
-          return;
-        }
-        setCurrentStep(3);
-        break;
-      case 3:
-        if (!age) {
-          alert("Please fill out this field!");
-          return;
-        }
-        setCurrentStep(4);
-        break;
-      case 4:
-        if (!hobbies) {
-          alert("Please fill out this field!");
-          return;
-        }
-        setCurrentStep(5);
-        break;
-      case 5:
-        if (!memory) {
-          alert("Please fill out this field!");
-          return;
-        }
-        setCurrentStep(6);
-        break;
-      case 6:
-        if (!priceRange) {
-          alert("Please fill out this field!");
-          return;
-        }
-        setCurrentStep(7);
-        break;
-      default:
-        break;
-    }
+    setCurrentStep((prevStep) => prevStep + 1);
   };
 
-  const prevStep = () => {
-    setCurrentStep((prevStep) => prevStep - 1);
+  const prevStep = (e: SyntheticEvent) => {
+    e.preventDefault();
+    if (currentStep > 0) {
+      setCurrentStep((prevStep) => prevStep - 1);
+    }
   };
 
   const renderStep = () => {
@@ -352,17 +325,11 @@ export default function Home() {
 
             <div className="flex justify-center">
               <a
-                className="hover:animate-pulse"
+                className="bg-blue-500 text-white w-60 text-center py-2 px-4 rounded-md hover:bg-blue-700"
                 target="_blank"
                 href={selectedGift?.link}
               >
-                <Image
-                  className="w-60"
-                  src="https://kentuckynerd.com/wp-content/uploads/2019/05/amazon-buy-now-button.jpg"
-                  alt="Buy now button"
-                  width={240}
-                  height={100}
-                />
+                Buy Now
               </a>
             </div>
           </div>
@@ -377,22 +344,24 @@ export default function Home() {
             >
               {renderStep()}
               <div className="flex justify-between mt-4">
-                {currentStep > 1 && (
+                {currentStep > 0 && (
                   <Button onClick={prevStep} className="bg-black text-white rounded-md hover:bg-gray-800 hover:text-white">
                     Back
                   </Button>
                 )}
-                {currentStep < 6 && currentStep != 0 && (
-                  <Button onClick={nextStep} className="bg-black text-white rounded-md hover:bg-gray-800 hover:text-white">
+                {currentStep < 6 && currentStep !== 0 && (
+                  <Button onClick={nextStep} className="bg-black text-white rounded-md hover:bg-gray-800 hover:text-white ml-auto">
                     Next
                   </Button>
                 )}
-                {currentStep === 6 && (
+              </div>
+              {currentStep === 6 && (
+                <div className="w-full mt-4">
                   <Button onClick={getRecommendations} className="bg-black text-white w-full rounded-md hover:bg-gray-800 hover:text-white" disabled={isLoading} type="button" variant="outline">
                     Get Recommendations
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
             </form>
           )}
 
@@ -476,6 +445,8 @@ export default function Home() {
       <footer className="justify-center items-center bg-gray-600 text-white h-20 flex flex-col">
         <div>
           Made with ❤️ by Samek Rangarajan
+        </div>
+        <div>
         </div>
       </footer>
     </div>

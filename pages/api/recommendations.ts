@@ -46,7 +46,7 @@ export default async function handler(
           .get()
           .withClassName('Gift')
           .withFields(
-            'giftId name category image description price average_rating ratings_count link' // Ensure link is included here
+            'giftId name category image description price average_rating link' // Ensure link is included here
           )
           .withNearText(nearText)
           .withLimit(20);

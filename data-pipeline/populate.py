@@ -29,7 +29,41 @@ class_obj = {
             "type": "text"
         },
         "generative-cohere": {}
-    }
+    },
+    "properties": [
+        {
+            "name": "giftId",
+            "dataType": ["string"]
+        },
+        {
+            "name": "name",
+            "dataType": ["string"]
+        },
+        {
+            "name": "category",
+            "dataType": ["string"]
+        },
+        {
+            "name": "image",
+            "dataType": ["string"]
+        },
+        {
+            "name": "description",
+            "dataType": ["string"]
+        },
+        {
+            "name": "price",
+            "dataType": ["number"]
+        },
+        {
+            "name": "average_rating",
+            "dataType": ["number"]
+        },
+        {
+            "name": "link",
+            "dataType": ["string"]
+        }
+    ]
 }
 
 client.schema.create_class(class_obj)
@@ -44,15 +78,12 @@ try:
         # Iterate through each row of data
         for gift in reader:
             current_gift = gift
-            # 0 - giftId
-            # 1 - name
-            # 2 - category
-            # 3 - image
-            # 4 - description
-            # 5 - price
-            # 6 - average_rating
-            # 7 - ratings_count
-            # 8 - link
+            try:
+                price = float(gift[5]) if gift[5] != 'N/A' else None
+                average_rating = float(gift[6]) if gift[6] != 'N/A' else None
+            except ValueError:
+                print(f"Skipping gift due to conversion error: {gift}")
+                continue
 
             properties = {
                 "giftId": gift[0],
@@ -60,10 +91,9 @@ try:
                 "category": gift[2],
                 "image": gift[3],
                 "description": gift[4],
-                "price": float(gift[5]),
-                "average_rating": float(gift[6]),
-                "ratings_count": int(gift[7]),
-                "link": gift[8],
+                "price": price,
+                "average_rating": average_rating,
+                "link": gift[7],
             }
 
             batch.add_data_object(data_object=properties, class_name="Gift")

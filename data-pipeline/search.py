@@ -34,7 +34,6 @@ response = (client.query.get("Gift", [
     "description",
     "price",
     "average_rating",
-    "ratings_count",
     "link"
 ]) .with_generate(single_prompt=generate_prompt).with_near_text(nearText).with_limit(10).do())
 
